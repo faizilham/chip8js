@@ -9,91 +9,119 @@ static inline void instr_00E0(){
 }
 
 static inline void instr_00EE(){ 
-	// blm RET
+	// RET
+	pc = stack[sp--];
 }
 
 static inline void instr_1nnn(){ 
-	// blm JMP
+	// jump to nnn
+	pc = get_nnn();
 }
 
 static inline void instr_2nnn(){ 
-	// blm CALL
+	// CALL at nnn
+	stack[++sp] = pc;
+	pc = get_nnn();
 }
 
 static inline void instr_3xkk(){ 
-	// blm SE
+	// skip next if Vx == kk
+	if (reg[get2()] == get_kk()) pc += 2;
 }
 
 static inline void instr_4xkk(){ 
-	// blm SNE
+	// skip next if Vx != kk
+	if (reg[get2()] != get_kk()) pc += 2;
 }
 
 static inline void instr_5xy0(){ 
-	// blm SE vy
+	// skip next if Vx == Vy
+	if (reg[get2()] == reg[get3()]) pc += 2;
 }
 
 static inline void instr_6xkk(){ 
-	// blm
+	// Set Vx = KK
+	reg[get2()] = get_kk();
 }
 
 static inline void instr_7xkk(){ 
-	// blm
+	// Vx += kk
+	reg[get2()] += get_kk();
 }
 
 static inline void instr_8xy0(){ 
-	// blm
+	// Vx = Vy
+	reg[get2()] = reg[get3()];
 }
 
 static inline void instr_8xy1(){ 
-	// blm
+	// Vx |= Vy
+	reg[get2()] |= reg[get3()];
 }
 
 static inline void instr_8xy2(){ 
-	// blm
+	// Vx &= Vy
+	reg[get2()] &= reg[get3()];
 }
 
 static inline void instr_8xy3(){ 
-	// blm
+	// Vx ^= Vy
+	reg[get2()] ^= reg[get3()];
 }
 
-static inline void instr_8xy4(){ 
-	// blm
+static inline void instr_8xy4(){
+	// Vx = Vx + Vy, VF = carry.
+	int temp = reg[get2()] + reg[get3()];
+
+	reg[get2()] = temp & 0xFF;
+	reg[0xF] = temp > 255 ? 1 : 0;
 }
 
 static inline void instr_8xy5(){ 
-	// blm
+	// Vx = Vx - Vy, VF = NOT borrow.
+	reg[0xF] = reg[get2()] > reg[get3()] ? 1 : 0;
+	reg[get2()] -= reg[get3()];
 }
 
 static inline void instr_8xy6(){ 
-	// blm
+	// Vx = Vx >> 1. VF = last bit
+	reg[0xF] = reg[get2()] & 0x01;
+	reg[get2()] >>= 1;
 }
 
 static inline void instr_8xy7(){ 
-	// blm
+	// Vx = Vy - Vx, VF = NOT borrow.
+	reg[0xF] = reg[get2()] < reg[get3()] ? 1 : 0;
+	reg[get2()] = reg[get3()] - reg[get2()];
 }
 
 static inline void instr_8xyE(){ 
-	// blm
+	// Vx = Vx << 1. VF = first bit
+	reg[0xF] = reg[get2()] & 0x80;
+	reg[get2()] <<= 1;
 }
 
 static inline void instr_9xy0(){ 
-	// blm
+	// skip next if Vx != Vy
+	if (reg[get2()] != reg[get3()]) pc += 2;
 }
 
 static inline void instr_Annn(){ 
-	// blm 
+	// I = nnn
+	reg_i = get_nnn();
 }
 
 static inline void instr_Bnnn(){ 
-	// blm 
+	// jump to V0 + nnn
+	pc = reg[0] + get_nnn();
 }
 
 static inline void instr_Cxkk(){ 
-	// blm 
+	// blm, random
 }
 
 static inline void instr_Dxyn(){ 
-	// blm 
+	// blm, draw
 }
 
 static inline void instr_Ex9E(){ 
@@ -105,7 +133,8 @@ static inline void instr_ExA1(){
 }
 
 static inline void instr_Fx07(){ 
-	// blm 
+	// Vx = DT
+	reg[get2()] = dt;
 }
 
 static inline void instr_Fx0A(){ 
@@ -113,15 +142,18 @@ static inline void instr_Fx0A(){
 }
 
 static inline void instr_Fx15(){ 
-	// blm 
+	// dt = Vx
+	dt = reg[get2()];
 }
 
 static inline void instr_Fx18(){ 
-	// blm 
+	// st = Vx
+	st = reg[get2()];
 }
 
 static inline void instr_Fx1E(){ 
-	// blm 
+	// I = I + Vx.
+	reg_i += reg[get2()];
 }
 
 static inline void instr_Fx29(){ 

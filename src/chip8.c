@@ -8,28 +8,30 @@
 byte mem[4096];
 byte reg[16];
 int reg_i;
-int pc;
+int pc, sp, dt, st;
 int need_redraw = 1;
+int stack[16];
+byte code1, code2;
 
 /*** Instruction Codes Byte Reading Function ***/
 static inline byte get1(){
-	return mem[pc] & 0xF0;
+	return code1 & 0xF0;
 }
 
 static inline byte get2(){
-	return mem[pc] & 0x0F;
+	return code1 & 0x0F;
 }
 
 static inline byte get3(){
-	return mem[pc+1] & 0xF0;
+	return code2 & 0xF0;
 }
 
 static inline byte get4(){
-	return mem[pc+1] & 0x0F;
+	return code2 & 0x0F;
 }
 
 static inline byte get_kk(){
-	return mem[pc+1] & 0xFF;
+	return code2 & 0xFF;
 }
 
 static inline int get_nnn(){
@@ -44,7 +46,7 @@ void init_machine(char* rom_file){
 	// read rom
 
 	//
-	pc = 0x200;
+	pc = 0x200; sp = -1; dt = 0; st = 0;
 }
 
 void update_machine(){
@@ -54,8 +56,11 @@ void update_machine(){
 
 
 inline void execute_one(){
-	byte front = get1(); int temp;
+	// fetch opcode
+	code1 = mem[pc]; code2 = mem[pc+1];
+	pc+=2;
 
+	byte front = get1(); int temp;
 	switch(front){
 		case 0x0:{
 			temp = get_kk();
@@ -131,6 +136,4 @@ inline void execute_one(){
 
 		default: break;
 	}
-	
-	pc+=2;
 }
