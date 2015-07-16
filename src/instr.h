@@ -1,5 +1,9 @@
 #ifdef CHIP8_C
 
+/**** Digit Sprites ****/
+
+byte digit_sprite[80] = {0xF0, 0x90, 0x90, 0x90, 0xF0, 0x20, 0x60, 0x20, 0x20, 0x70, 0xF0, 0x10, 0xF0, 0x80, 0xF0, 0xF0, 0x10, 0xF0, 0x10, 0xF0, 0x90, 0x90, 0xF0, 0x10, 0x10, 0xF0, 0x80, 0xF0, 0x10, 0xF0, 0xF0, 0x80, 0xF0, 0x90, 0xF0, 0xF0, 0x10, 0x20, 0x40, 0x40, 0xF0, 0x90, 0xF0, 0x90, 0xF0, 0xF0, 0x90, 0xF0, 0x10, 0xF0, 0xF0, 0x90, 0xF0, 0x90, 0x90, 0xE0, 0x90, 0xE0, 0x90, 0xE0, 0xF0, 0x80, 0x80, 0x80, 0xF0, 0xE0, 0x90, 0x90, 0x90, 0xE0, 0xF0, 0x80, 0xF0, 0x80, 0xF0, 0xF0, 0x80, 0xF0, 0x80, 0x80};
+
 /**** INSTRUCTIONS ****/
 
 static inline void instr_00E0(){
@@ -97,7 +101,7 @@ static inline void instr_8xy7(){
 
 static inline void instr_8xyE(){ 
 	// Vx = Vx << 1. VF = first bit
-	reg[0xF] = reg[get2()] & 0x80;
+	reg[0xF] = (reg[get2()] & 0x80) ? 1 : 0;
 	reg[get2()] <<= 1;
 }
 
@@ -122,7 +126,23 @@ static inline void instr_Cxkk(){
 }
 
 static inline void instr_Dxyn(){ 
-	// blm, draw
+	// draw sprite
+
+	int x1 = reg[get2()], y1 = reg[get3()], n = get4(), vf = 0, mask;
+	byte row, px, pold;
+
+	for (int y = 0; y < n; ++y){
+		row = mem[reg_i + y];
+		mask = 0x80;
+		for (int x = 0; x < 8; ++x){
+			px = (row & mask) ? 1 : 0; mask >>=1;
+			display[x1 + x][y1 + y] ^= px; // xor the sprite to current screen
+
+			vf |= px && !display[x1 + x][y1 + y]; // check erased: pixel is 1 and result is 0
+		}
+	}
+
+	need_redraw = 1;
 }
 
 static inline void instr_Ex9E(){ 
@@ -158,7 +178,8 @@ static inline void instr_Fx1E(){
 }
 
 static inline void instr_Fx29(){ 
-	// blm, I = location of sprite for digit Vx.
+	// I = location of sprite for digit Vx.
+	reg_i = 5 * reg[get2()];
 }
 
 static inline void instr_Fx33(){ 

@@ -16,7 +16,7 @@ byte code1, code2;
 
 /*** Instruction Codes Byte Reading Function ***/
 static inline byte get1(){
-	return code1 & 0xF0;
+	return (code1 >> 4) & 0x0F;
 }
 
 static inline byte get2(){
@@ -24,7 +24,7 @@ static inline byte get2(){
 }
 
 static inline byte get3(){
-	return code2 & 0xF0;
+	return (code2 >> 4) & 0x0F;
 }
 
 static inline byte get4(){
@@ -44,6 +44,9 @@ static inline int get_nnn(){
 #include "instr.h"
 
 void init_machine(char* rom_file){
+	// copy digits
+	memcpy(mem, digit_sprite, 80);
+	
 	// read rom
 
 	//
