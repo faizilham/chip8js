@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "chip8.h"
-#include "display.h"
+#include "media.h"
 #include <time.h>
 #define CHIP8_C
 
@@ -46,7 +46,7 @@ static inline int get_nnn(){
 void init_machine(char* rom_file){
 	// copy digits
 	memcpy(mem, digit_sprite, 80);
-	
+
 	// read rom
 
 	//

@@ -1,8 +1,8 @@
-#ifndef display_h
-#define display_h
+#ifndef media_h
+#define media_h
 #include <stdlib.h>
 #include <stdio.h>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 typedef unsigned char byte;
 

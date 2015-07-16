@@ -1,4 +1,4 @@
-#include "display.h"
+#include "media.h"
 
 char display[64][32];
 SDL_Rect pixel[64][32];
@@ -25,10 +25,8 @@ inline int init_display(){
 		if ((window = SDL_CreateWindow("Chip8js", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 320, SDL_WINDOW_SHOWN)) == NULL) return 0;
 		if ((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) == NULL) return 0;
 
-		//if ((screen = SDL_SetVideoMode(width, height, 32, SDL_HWSURFACE | SDL_DOUBLEBUF))!=NULL){
-			init_pixel();
-			return 1;
-		//}
+		init_pixel();
+		return 1;
 	}
 
 	return 0;

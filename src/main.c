@@ -1,5 +1,5 @@
 #include <emscripten/emscripten.h>
-#include "display.h"
+#include "media.h"
 #include "chip8.h"
 
 void loop() {
