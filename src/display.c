@@ -5,7 +5,7 @@ SDL_Rect pixel[64][32];
 const int width = 640, height = 320, size=10;
 SDL_Surface *screen = NULL;
 
-void init_pixel(){
+static inline void init_pixel(){
 	for (int x = 0; x < 64; ++x){
 		for (int y = 0; y < 32; ++y){
 			pixel[x][y].x = x*size;
@@ -18,9 +18,9 @@ void init_pixel(){
 	}
 }
 
-int init_display(){
+inline int init_display(){
 	if (SDL_Init(SDL_INIT_VIDEO) == 0){
-		if ((screen = SDL_SetVideoMode(width, height, 32, SDL_HWSURFACE | SDL_DOUBLEBUF))!=NULL){ // or SDL_HWSURFACE ?
+		if ((screen = SDL_SetVideoMode(width, height, 32, SDL_HWSURFACE | SDL_DOUBLEBUF))!=NULL){
 			init_pixel();
 			return 1;
 		}
@@ -29,14 +29,16 @@ int init_display(){
 	return 0;
 }
 
-void shutdown_display(){
+inline void shutdown_display(){
 	SDL_FreeSurface(screen);
 	SDL_Quit();
 }
 
  
-void draw() {
+inline void draw() {
+	// simple draw update
 	SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
+
 	for (int x = 0; x < 64; ++x){
 		for (int y = 0; y < 32; ++y){
 			if (display[x][y]){

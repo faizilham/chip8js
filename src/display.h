@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <SDL/SDL.h>
 
+typedef unsigned char byte;
+
 extern char display[64][32];
 
 int init_display();
