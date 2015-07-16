@@ -1,34 +1,49 @@
 #include "display.h"
 
-int init_gl(){
-	const int width = 640, height = 320;
-	if (glfwInit() != GL_TRUE) {
-		printf("glfwInit() failed\n");
-		return GL_FALSE;
+char display[64][32];
+SDL_Rect pixel[64][32];
+const int width = 640, height = 320, size=10;
+SDL_Surface *screen = NULL;
+
+void init_pixel(){
+	for (int x = 0; x < 64; ++x){
+		for (int y = 0; y < 32; ++y){
+			pixel[x][y].x = x*size;
+			pixel[x][y].y = y*size;
+			pixel[x][y].w = size;
+			pixel[x][y].h = size;
+
+			display[x][y] = (x % 2 == y % 2);
+		}
+	}
+}
+
+int init_display(){
+	if (SDL_Init(SDL_INIT_VIDEO) == 0){
+		if ((screen = SDL_SetVideoMode(width, height, 32, SDL_HWSURFACE | SDL_DOUBLEBUF))!=NULL){ // or SDL_HWSURFACE ?
+			init_pixel();
+			return 1;
+		}
 	}
 
-	if (glfwOpenWindow(width, height, 8, 8, 8, 8, 16, 0, GLFW_WINDOW) != GL_TRUE) {
-		printf("glfwOpenWindow() failed\n");
-		return GL_FALSE;
-	}
-
-	return GL_TRUE;
+	return 0;
 }
 
-void shutdown_gl(){
-	glfwTerminate();
+void shutdown_display(){
+	SDL_FreeSurface(screen);
+	SDL_Quit();
 }
 
-void on_surface_created() {
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-}
- 
-void on_surface_changed() {
-    // No-op
-}
  
 void draw() {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glfwSwapBuffers();
+	SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
+	for (int x = 0; x < 64; ++x){
+		for (int y = 0; y < 32; ++y){
+			if (display[x][y]){
+				SDL_FillRect(screen, &pixel[x][y], SDL_MapRGB(screen->format, 255, 255, 255));
+			}
+		}
+	}
+	SDL_Flip(screen);
 }
 

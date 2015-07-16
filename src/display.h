@@ -2,13 +2,12 @@
 #define display_h
 #include <stdlib.h>
 #include <stdio.h>
-#include <GL/glfw.h>
+#include <SDL/SDL.h>
 
-int init_gl();
-void shutdown_gl();
+extern char display[64][32];
 
-void on_surface_created();
-void on_surface_changed();
+int init_display();
+void shutdown_display();
 void draw();
 
 #endif

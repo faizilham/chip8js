@@ -2,18 +2,16 @@
 #include "display.h"
 
 
-void do_frame() {
+void main_loop() {
 	draw();
 }
 
 int main() {
-	if (init_gl() == GL_TRUE) {
-		on_surface_created();
-		on_surface_changed();
-		emscripten_set_main_loop(do_frame, 24, 1);
+	if (init_display()) {
+		emscripten_set_main_loop(main_loop, 60, 1);
 	}
  
-	shutdown_gl();
+	shutdown_display();
  
 	return 0;
 }
