@@ -3,6 +3,7 @@
 #include <string.h>
 #include "chip8.h"
 #include "display.h"
+#include <time.h>
 #define CHIP8_C
 
 byte mem[4096];
@@ -47,6 +48,7 @@ void init_machine(char* rom_file){
 
 	//
 	pc = 0x200; sp = -1; dt = 0; st = 0;
+	srand(time(NULL));
 }
 
 void update_machine(){

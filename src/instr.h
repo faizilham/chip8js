@@ -117,7 +117,8 @@ static inline void instr_Bnnn(){
 }
 
 static inline void instr_Cxkk(){ 
-	// blm, random
+	// Vx = random(256) & kk
+	reg[get2()] = (rand() % 256) & get_kk();
 }
 
 static inline void instr_Dxyn(){ 
@@ -125,11 +126,11 @@ static inline void instr_Dxyn(){
 }
 
 static inline void instr_Ex9E(){ 
-	// blm 
+	// blm, skip if key == Vx pressed
 }
 
 static inline void instr_ExA1(){ 
-	// blm 
+	// blm, skip if key == Vx not pressed
 }
 
 static inline void instr_Fx07(){ 
@@ -138,7 +139,7 @@ static inline void instr_Fx07(){
 }
 
 static inline void instr_Fx0A(){ 
-	// blm 
+	// blm, wait until key pressed then Vx = key
 }
 
 static inline void instr_Fx15(){ 
@@ -157,19 +158,28 @@ static inline void instr_Fx1E(){
 }
 
 static inline void instr_Fx29(){ 
-	// blm 
+	// blm, I = location of sprite for digit Vx.
 }
 
 static inline void instr_Fx33(){ 
-	// blm 
+	// BCD representation of Vx in memory locations I, I+1, and I+2
+	int vx = reg[get2()];
+	for (int i = 2; i >= 0; --i){
+		mem[reg_i + i] = vx % 10;
+		vx = vx / 10;
+	}
 }
 
 static inline void instr_Fx55(){ 
-	// blm 
+	// store registers to mem[I] until mem[I+x]
+	int x = get2();
+	for (int i = 0; i <= x; ++i) mem[reg_i + i] = reg[i];
 }
 
 static inline void instr_Fx65(){ 
-	// blm 
+	// read registers from mem[I] until mem[I+x] 
+	int x = get2();
+	for (int i = 0; i <= x; ++i) reg[i] = mem[reg_i + i];
 }
 
 #endif
