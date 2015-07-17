@@ -131,11 +131,7 @@ static inline void instr_Dxyn(){
 	int x1 = reg[get2()], y1 = reg[get3()], n = get4(), vf = 0, mask;
 	int x, y;
 
-	if (x1 > 63) x1 = 0;
-	else if (x1 < 0) x1 = 63;
-
-	if (y1 > 31) y1 = 0;
-	else if (y1 < 0) y1 = 31;
+	x1 = x1 % 64; y1 = y1 % 32;
 
 	byte row, px, pold;
 	for (int dy = 0; dy < n; ++dy){
