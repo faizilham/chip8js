@@ -2,3 +2,4 @@
 bin
 ref
 web/chip8.js
+*.mem

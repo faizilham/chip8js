@@ -11,9 +11,11 @@
     <div class="emscripten_border">
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
     </div>
-
-    <button onclick="Module._main()">Start</button>
+    <input type="file" id="file_select" value="Load ROM File"/> <button id="start_button" onclick="startstop()" >Start</button>
     <script type="text/javascript">
+      var start_button = document.getElementById("start_button");
+      var file_select = document.getElementById("file_select");
+
       var Module = {
 
         canvas: (function() {
@@ -25,6 +27,53 @@
 
         noInitialRun: true
       };
+
+      var playing = false;
+
+      function startstop(){
+        if (!playing){
+          load_file();
+        }else{
+          stop_machine();
+        }
+      }
+
+      function flipstate(){
+        if (!playing){
+          playing = true;
+          start_button.innerHTML = "Stop";
+        }else{
+          playing = false;
+          start_button.innerHTML = "Start";
+        }
+      }
+
+      function stop_machine(){
+        flipstate();
+        Module._stop_loop();
+      }
+
+      function load_file(){
+        var file_url = file_select.files[0];
+        if (!file_url){
+          alert("Please load a ROM file");
+          return;
+        } 
+
+        reader = new FileReader();
+        reader.addEventListener("loadend", function() {
+          result = new Uint8Array(reader.result);
+
+          var fp = FS.open("/temp.rom", "w");
+          FS.write(fp, result, 0, result.length, 0);
+          FS.close(fp);
+
+          flipstate();
+          Module._main();
+        });
+
+        reader.readAsArrayBuffer(file_url);
+      }
     </script>
     <script async type="text/javascript" src="chip8.js"></script>
   </body>

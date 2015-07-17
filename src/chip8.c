@@ -10,9 +10,10 @@ byte mem[4096];
 byte reg[16];
 int reg_i;
 int pc, sp, dt, st;
-int need_redraw = 1;
+int need_redraw;
 int stack[16];
 byte code1, code2;
+int machine_stop;
 
 /*** Instruction Codes Byte Reading Function ***/
 static inline byte get1(){
@@ -36,7 +37,7 @@ static inline byte get_kk(){
 }
 
 static inline int get_nnn(){
-	int ret = get1();
+	int ret = get2();
 	return (ret << 8) | get_kk();
 }
 
@@ -44,27 +45,41 @@ static inline int get_nnn(){
 #include "instr.h"
 
 void init_machine(char* rom_file){
+	printf("machine starts\n");
+	memset(mem, 0, 4096);
+
+	// init machine state
+	pc = 0x200; sp = -1; dt = 0; st = 0; need_redraw = 1; machine_stop = 0;
+	srand(time(NULL));
+
 	// copy digits
 	memcpy(mem, digit_sprite, 80);
 
 	// read rom
+	FILE *file; char buf[1024];
+	if ((file = fopen(rom_file, "rb")) != NULL){
+		printf("reading rom file\n");		
 
-	//
-	pc = 0x200; sp = -1; dt = 0; st = 0;
-	srand(time(NULL));
+		// get size
+		fseek(file, 0L, SEEK_END);
+		int size = ftell(file);
+		printf("size: %d\n", size);
+		rewind(file);
+
+		// read file
+		if (size < 3584){
+			int sz = fread(mem + pc, size, 1, file);
+			printf("read: %d\n", sz);
+		}
+		fclose(file);
+	}	
 }
 
-void update_machine(){
-	// update timer
-	// update 
-}
-
-
-inline void execute_one(){
+static inline void execute_one(){
 	// fetch opcode
 	code1 = mem[pc]; code2 = mem[pc+1];
 	pc+=2;
-
+	
 	byte front = get1(); int temp;
 	switch(front){
 		case 0x0:{
@@ -141,4 +156,14 @@ inline void execute_one(){
 
 		default: break;
 	}
+
+	if (pc >= 4096) machine_stop = 1;
+}
+
+void update_machine(){
+	// update timer
+	// update
+	if (dt > 0) --dt;
+	if (st > 0) --st;
+	execute_one();
 }

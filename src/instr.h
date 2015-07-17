@@ -130,12 +130,11 @@ static inline void instr_Dxyn(){
 
 	int x1 = reg[get2()], y1 = reg[get3()], n = get4(), vf = 0, mask;
 	byte row, px, pold;
-
 	for (int y = 0; y < n; ++y){
 		row = mem[reg_i + y];
 		mask = 0x80;
 		for (int x = 0; x < 8; ++x){
-			px = (row & mask) ? 1 : 0; mask >>=1;
+			px = (row & mask) ? 1 : 0; mask >>=1; // translate to display pixel for each bit
 			display[x1 + x][y1 + y] ^= px; // xor the sprite to current screen
 
 			vf |= px && !display[x1 + x][y1 + y]; // check erased: pixel is 1 and result is 0

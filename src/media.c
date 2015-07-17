@@ -15,7 +15,7 @@ static inline void init_pixel(){
 			pixel[x][y].w = size;
 			pixel[x][y].h = size;
 
-			display[x][y] = (x % 2 == y % 2);
+			display[x][y] = 0;
 		}
 	}
 }
@@ -42,13 +42,13 @@ inline void shutdown_display(){
  
 inline void draw() {
 	// simple draw update
-	SDL_SetRenderDrawColor(renderer, 0,0,0,255);
+	SDL_SetRenderDrawColor(renderer, 30,30,30,255);
 	SDL_RenderClear(renderer);
 
 	for (int x = 0; x < 64; ++x){
 		for (int y = 0; y < 32; ++y){
 			if (display[x][y]){
-				SDL_SetRenderDrawColor(renderer, 255,255,255,255);
+				SDL_SetRenderDrawColor(renderer, 240,240,240,255);
 				SDL_RenderFillRect(renderer, &pixel[x][y]);
 			}
 		}
