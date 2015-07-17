@@ -168,5 +168,6 @@ void update_machine(){
 	if (st > 0) --st;
 
 	// update
-	execute_one();
+	for (int i = 0; i < 10; ++i)
+		execute_one();
 }
