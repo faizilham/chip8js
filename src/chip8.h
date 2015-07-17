@@ -4,6 +4,7 @@
 void init_machine(char* rom_file);
 void update_machine();
 extern int need_redraw;
+extern int wait_key;
 
 
 #endif

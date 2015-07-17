@@ -7,17 +7,19 @@ void stop_loop(){
 }
 
 void loop() {
+	poll_keyevent();
+	update_machine();
+
 	if (need_redraw){
 		draw();
 		need_redraw = 0;
 	}
-	update_machine();
 }
 
 int main() {
 	if (init_display()) {
 		init_machine("/temp.rom");
-		emscripten_set_main_loop(loop, 0, 1); // use fixed 60 fps or browser frame rate?
+		emscripten_set_main_loop(loop, 60, 1); // use fixed 60 fps or browser frame rate?
 	}
  
 	shutdown_display();

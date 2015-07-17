@@ -145,11 +145,13 @@ static inline void instr_Dxyn(){
 }
 
 static inline void instr_Ex9E(){ 
-	// blm, skip if key == Vx pressed
+	// skip if key == Vx pressed
+	if (key_pressed(reg[get2()])) pc += 2;
 }
 
 static inline void instr_ExA1(){ 
-	// blm, skip if key == Vx not pressed
+	// skip if key == Vx not pressed
+	if (!key_pressed(reg[get2()])) pc += 2;
 }
 
 static inline void instr_Fx07(){ 
@@ -158,7 +160,14 @@ static inline void instr_Fx07(){
 }
 
 static inline void instr_Fx0A(){ 
-	// blm, wait until key pressed then Vx = key
+	// wait until key pressed then Vx = key
+	if (key_pressed(ANY_KEY)){
+		wait_key = 0;
+		reg[get2()] = get_pressed();
+	}else{
+		wait_key = 1;
+		pc -= 2;
+	}
 }
 
 static inline void instr_Fx15(){ 

@@ -14,6 +14,7 @@ int need_redraw;
 int stack[16];
 byte code1, code2;
 int machine_stop;
+int wait_key;
 
 /*** Instruction Codes Byte Reading Function ***/
 static inline byte get1(){
@@ -50,13 +51,14 @@ void init_machine(char* rom_file){
 
 	// init machine state
 	pc = 0x200; sp = -1; dt = 0; st = 0; need_redraw = 1; machine_stop = 0;
+	wait_key = 0;
 	srand(time(NULL));
 
 	// copy digits
 	memcpy(mem, digit_sprite, 80);
 
 	// read rom
-	FILE *file; char buf[1024];
+	FILE *file = NULL; char buf[1024];
 	if ((file = fopen(rom_file, "rb")) != NULL){
 		printf("reading rom file\n");		
 
@@ -162,8 +164,9 @@ static inline void execute_one(){
 
 void update_machine(){
 	// update timer
-	// update
 	if (dt > 0) --dt;
 	if (st > 0) --st;
+
+	// update
 	execute_one();
 }
