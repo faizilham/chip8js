@@ -11,6 +11,8 @@
     <div class="emscripten_border">
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
     </div>
+
+    <button onclick="Module._main()">Start</button>
     <script type="text/javascript">
       var Module = {
 
@@ -19,8 +21,9 @@
           canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
 
           return canvas;
-        })()
+        })(),
 
+        noInitialRun: true
       };
     </script>
     <script async type="text/javascript" src="chip8.js"></script>
