@@ -129,15 +129,26 @@ static inline void instr_Dxyn(){
 	// draw sprite
 
 	int x1 = reg[get2()], y1 = reg[get3()], n = get4(), vf = 0, mask;
-	byte row, px, pold;
-	for (int y = 0; y < n; ++y){
-		row = mem[reg_i + y];
-		mask = 0x80;
-		for (int x = 0; x < 8; ++x){
-			px = (row & mask) ? 1 : 0; mask >>=1; // translate to display pixel for each bit
-			display[x1 + x][y1 + y] ^= px; // xor the sprite to current screen
+	int x, y;
 
-			vf |= px && !display[x1 + x][y1 + y]; // check erased: pixel is 1 and result is 0
+	if (x1 > 63) x1 = 0;
+	else if (x1 < 0) x1 = 63;
+
+	if (y1 > 31) y1 = 0;
+	else if (y1 < 0) y1 = 31;
+
+	byte row, px, pold;
+	for (int dy = 0; dy < n; ++dy){
+		row = mem[reg_i + dy];
+		mask = 0x80;
+		for (int dx = 0; dx < 8; ++dx){
+			x = x1 + dx; y = y1 + dy;
+			if ((x < 0) || (y < 0) || (x > 63) || (y > 31)) continue;
+
+			px = (row & mask) ? 1 : 0; mask >>=1; // translate to display pixel for each bit
+			display[x][y] ^= px; // xor the sprite to current screen
+
+			vf |= px && !display[x][y]; // check erased: pixel is 1 and result is 0
 		}
 	}
 
