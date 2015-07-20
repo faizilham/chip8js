@@ -76,7 +76,6 @@ inline void render_screen(){
 
 
 inline void poll_keyevent(){
-	//SDL_PumpEvents();
 	SDL_Event e;
 	keystate_change = 0;
 	while (SDL_PollEvent(&e)) {
@@ -87,8 +86,6 @@ inline void poll_keyevent(){
 }
 
 int key_pressed(byte k){
-	//if (!keystate_change) return 0;
-
 	if (k == ANY_KEY){
 		if (num_pressed && keystate_change){
 			keystate_change = 0;
@@ -116,11 +113,7 @@ void start_bell(){
 }
 
 void end_bell(){
-	//SDL_PauseAudio(1);
-
 	if(Mix_PlayingMusic() > 0) {
 		Mix_HaltMusic();
 	}
-
-	
 }
