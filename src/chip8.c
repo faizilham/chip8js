@@ -17,6 +17,8 @@ int pc, sp, dt, st;
 int need_redraw;
 int stack[16];
 byte code1, code2;
+int io_opcode;
+int cycles;
 
 // machine states
 int machine_stop;
@@ -58,7 +60,7 @@ void init_machine(char* rom_file){
 
 	// init machine state
 	pc = PROGRAM_START; sp = -1; dt = 0; st = 0; need_redraw = 1; machine_stop = 0; sound_playing = 0;
-	wait_key = 0;
+	wait_key = 0; cycles = 0;
 	srand(time(NULL));
 
 	// copy digits
@@ -87,7 +89,7 @@ void init_machine(char* rom_file){
 static inline void execute_one(){
 	// fetch opcode
 	code1 = mem[pc]; code2 = mem[pc+1];
-	pc+=2;
+	pc+=2; io_opcode = 0;
 	
 	byte front = get1(); int temp;
 	switch(front){
@@ -166,10 +168,11 @@ static inline void execute_one(){
 		default: break;
 	}
 
+	cycles -= 1;
 	if (pc >= MEMORY_SIZE) machine_stop = 1;
 }
 
-void update_machine(){
+void update_machine(int cycle){
 	// update timer
 	if (dt > 0) --dt;
 
@@ -181,7 +184,10 @@ void update_machine(){
 	}
 
 	int temp_sound_playing = sound_playing;
+	cycles += cycle;
 	// update
-	for (int i = 0; i < 10 && temp_sound_playing == sound_playing; ++i)
+	while (cycles > 0)
 		execute_one();
+
+	io_opcode = 0;
 }

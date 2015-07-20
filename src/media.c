@@ -45,6 +45,7 @@ inline int init_media(){
 }
 
 inline void shutdown_media(){
+	Mix_HaltMusic();
 	Mix_FreeMusic(beep);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
@@ -65,6 +66,10 @@ inline void draw() {
 			}
 		}
 	}
+	
+}
+
+inline void render_screen(){
 	SDL_RenderPresent(renderer);
 }
 

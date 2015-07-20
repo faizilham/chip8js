@@ -156,11 +156,13 @@ static inline void instr_Dxyn(){
 static inline void instr_Ex9E(){ 
 	// skip if key == Vx pressed
 	if (key_pressed(reg[get2()])) pc += 2;
+	io_opcode = 1;
 }
 
 static inline void instr_ExA1(){ 
 	// skip if key == Vx not pressed
 	if (!key_pressed(reg[get2()])) pc += 2;
+	io_opcode = 1;
 }
 
 static inline void instr_Fx07(){ 
@@ -177,6 +179,7 @@ static inline void instr_Fx0A(){
 		wait_key = 1;
 		pc -= 2;
 	}
+	io_opcode = 1;
 }
 
 static inline void instr_Fx15(){ 
@@ -190,6 +193,7 @@ static inline void instr_Fx18(){
 	if (st > 0 && !sound_playing){
 		start_bell();
 		sound_playing = 1;
+		io_opcode = 1;
 	}
 }
 

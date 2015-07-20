@@ -12,6 +12,7 @@ extern char display[64][32];
 int init_media();
 void shutdown_media();
 void draw();
+void render_screen();
 void poll_keyevent();
 int key_pressed(byte key);
 byte get_pressed();
