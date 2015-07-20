@@ -148,6 +148,8 @@ static inline void instr_Dxyn(){
 		}
 	}
 
+	reg[0xF] = vf ? 1 : 0;
+
 	need_redraw = 1;
 }
 
@@ -185,6 +187,10 @@ static inline void instr_Fx15(){
 static inline void instr_Fx18(){ 
 	// st = Vx
 	st = reg[get2()];
+	if (st > 0){
+		//start_bell();
+		sound_playing = 1;
+	}
 }
 
 static inline void instr_Fx1E(){ 
