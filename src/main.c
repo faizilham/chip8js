@@ -9,6 +9,14 @@ void stop_loop(){
 	shutdown_media();
 }
 
+void trigger_stop(){
+	printf("stopped\n");
+	EM_ASM( flipstate() );
+	stop_loop();
+	
+	exit(0);
+}
+
 void loop() {
 	int start_tick = SDL_GetTicks();
 	int elapsed =  start_tick - last_tick;
@@ -28,7 +36,7 @@ void loop() {
 
 int main() {
 	if (init_media()) {
-		init_machine("/temp.rom");
+		init_machine("/temp.rom", trigger_stop);
 		last_tick = SDL_GetTicks();
 		emscripten_set_main_loop(loop, 60, 1); // use fixed 60 fps or browser frame rate?
 	}

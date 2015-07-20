@@ -5,6 +5,7 @@
 char display[64][32];
 SDL_Rect pixel[64][32];
 const int width = 640, height = 320, size=10;
+int keystate_change;
 
 byte last_pressed; int num_pressed;
 const Uint8 *keystate = NULL;
@@ -75,12 +76,22 @@ inline void render_screen(){
 
 
 inline void poll_keyevent(){
-	SDL_PumpEvents();
+	//SDL_PumpEvents();
+	SDL_Event e;
+	keystate_change = 0;
+	while (SDL_PollEvent(&e)) {
+		if ((e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) && !e.key.repeat){
+			keystate_change = 1;
+		}
+	}
 }
 
 int key_pressed(byte k){
+	//if (!keystate_change) return 0;
+
 	if (k == ANY_KEY){
-		if (num_pressed){
+		if (num_pressed && keystate_change){
+			keystate_change = 0;
 			for (byte i = 0; i < 16; ++i){
 				if (keystate[keycodes[i]]){
 					last_pressed = i;

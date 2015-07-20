@@ -19,6 +19,9 @@ int stack[16];
 byte code1, code2;
 int io_opcode;
 int cycles;
+void (*on_opcode_fail)();
+
+void default_opcode_fail(){};
 
 // machine states
 int machine_stop;
@@ -54,7 +57,7 @@ static inline int get_nnn(){
 /*** Include: Chip8 Instruction Codes ***/
 #include "instr.h"
 
-void init_machine(char* rom_file){
+void init_machine(char* rom_file, void (*fail_function)()){
 	printf("machine starts\n");
 	memset(mem, 0, MEMORY_SIZE);
 
@@ -63,24 +66,27 @@ void init_machine(char* rom_file){
 	wait_key = 0; cycles = 0;
 	srand(time(NULL));
 
+	if (fail_function == NULL){
+		on_opcode_fail = default_opcode_fail;
+	}else{
+		on_opcode_fail = fail_function;
+	}
+
 	// copy digits
 	memcpy(mem, digit_sprite, 80);
 
 	// read rom
 	FILE *file = NULL; char buf[1024];
 	if ((file = fopen(rom_file, "rb")) != NULL){
-		printf("reading rom file\n");		
 
 		// get size
 		fseek(file, 0L, SEEK_END);
 		int size = ftell(file);
-		printf("size: %d\n", size);
 		rewind(file);
 
 		// read file
 		if (size < MAX_PROGRAM_SIZE){
 			int sz = fread(mem + pc, size, 1, file);
-			printf("read: %d\n", sz);
 		}
 		fclose(file);
 	}	
@@ -100,7 +106,7 @@ static inline void execute_one(){
 			}else if (temp == 0xEE){
 				instr_00EE();
 			}else{
-
+				on_opcode_fail();
 			}
 			
 			// 0nnn not implemented
@@ -127,7 +133,7 @@ static inline void execute_one(){
 				case 0x6: instr_8xy6(); break;
 				case 0x7: instr_8xy7(); break;
 				case 0xE: instr_8xyE(); break;
-				default: break;
+				default: on_opcode_fail(); break;
 			}
 		} break;
 
@@ -145,7 +151,7 @@ static inline void execute_one(){
 			}else if (temp == 0xA1){
 				instr_ExA1();
 			}else{
-
+				on_opcode_fail();
 			}
 		} break;
 
@@ -161,15 +167,21 @@ static inline void execute_one(){
 				case 0x33: instr_Fx33(); break;
 				case 0x55: instr_Fx55(); break;
 				case 0x65: instr_Fx65(); break;
-				default: break;
+				default: 
+					on_opcode_fail();
+				break;
 			}
 		} break;
 
-		default: break;
+		default: 
+			on_opcode_fail();
+		break;
 	}
 
 	cycles -= 1;
-	if (pc >= MEMORY_SIZE) machine_stop = 1;
+	if (pc >= MEMORY_SIZE){
+		on_opcode_fail();
+	}
 }
 
 void update_machine(int cycle){
