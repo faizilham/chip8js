@@ -3,7 +3,8 @@
 #include "chip8.h"
 
 void stop_loop(){
-	 emscripten_cancel_main_loop();
+	emscripten_cancel_main_loop();
+	shutdown_media();
 }
 
 void loop() {
@@ -17,12 +18,12 @@ void loop() {
 }
 
 int main() {
-	if (init_display()) {
+	if (init_media()) {
 		init_machine("/temp.rom");
 		emscripten_set_main_loop(loop, 60, 1); // use fixed 60 fps or browser frame rate?
 	}
  
-	shutdown_display();
+	shutdown_media();
  
 	return 0;
 }

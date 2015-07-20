@@ -9,11 +9,15 @@ typedef unsigned char byte;
 
 extern char display[64][32];
 
-int init_display();
-void shutdown_display();
+int init_media();
+void shutdown_media();
 void draw();
 void poll_keyevent();
 int key_pressed(byte key);
 byte get_pressed();
+
+void start_bell();
+void end_bell();
+void push_audio_buffer();
 
 #endif

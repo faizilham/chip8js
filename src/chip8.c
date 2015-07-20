@@ -6,15 +6,22 @@
 #include <time.h>
 #define CHIP8_C
 
-byte mem[4096];
+#define PROGRAM_START 0x200
+#define MEMORY_SIZE 4096
+#define MAX_PROGRAM_SIZE 3584
+
+byte mem[MEMORY_SIZE];
 byte reg[16];
 int reg_i;
 int pc, sp, dt, st;
 int need_redraw;
 int stack[16];
 byte code1, code2;
+
+// machine states
 int machine_stop;
 int wait_key;
+int sound_playing;
 
 /*** Instruction Codes Byte Reading Function ***/
 static inline byte get1(){
@@ -47,10 +54,10 @@ static inline int get_nnn(){
 
 void init_machine(char* rom_file){
 	printf("machine starts\n");
-	memset(mem, 0, 4096);
+	memset(mem, 0, MEMORY_SIZE);
 
 	// init machine state
-	pc = 0x200; sp = -1; dt = 0; st = 0; need_redraw = 1; machine_stop = 0;
+	pc = PROGRAM_START; sp = -1; dt = 0; st = 0; need_redraw = 1; machine_stop = 0; sound_playing = 0;
 	wait_key = 0;
 	srand(time(NULL));
 
@@ -69,7 +76,7 @@ void init_machine(char* rom_file){
 		rewind(file);
 
 		// read file
-		if (size < 3584){
+		if (size < MAX_PROGRAM_SIZE){
 			int sz = fread(mem + pc, size, 1, file);
 			printf("read: %d\n", sz);
 		}
@@ -159,15 +166,22 @@ static inline void execute_one(){
 		default: break;
 	}
 
-	if (pc >= 4096) machine_stop = 1;
+	if (pc >= MEMORY_SIZE) machine_stop = 1;
 }
 
 void update_machine(){
 	// update timer
 	if (dt > 0) --dt;
-	if (st > 0) --st;
 
+	if (st > 0) {
+		--st;
+	} else if (sound_playing) {
+		sound_playing = 0;
+		end_bell();
+	}
+
+	int temp_sound_playing = sound_playing;
 	// update
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 10 && temp_sound_playing == sound_playing; ++i)
 		execute_one();
 }

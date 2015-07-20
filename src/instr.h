@@ -187,8 +187,8 @@ static inline void instr_Fx15(){
 static inline void instr_Fx18(){ 
 	// st = Vx
 	st = reg[get2()];
-	if (st > 0){
-		//start_bell();
+	if (st > 0 && !sound_playing){
+		start_bell();
 		sound_playing = 1;
 	}
 }

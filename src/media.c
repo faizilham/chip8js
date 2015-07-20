@@ -1,4 +1,6 @@
 #include "media.h"
+#include "math.h"
+#include <SDL/SDL_mixer.h>
 
 char display[64][32];
 SDL_Rect pixel[64][32];
@@ -10,6 +12,8 @@ static const SDL_Keycode keycodes[16] = {SDL_SCANCODE_X, SDL_SCANCODE_1, SDL_SCA
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
+
+Mix_Music *beep = NULL;
 
 static inline void init_pixel(){
 	for (int x = 0; x < 64; ++x){
@@ -24,10 +28,12 @@ static inline void init_pixel(){
 	}
 }
 
-inline int init_display(){
+inline int init_media(){
 	keystate = SDL_GetKeyboardState(&num_pressed);
-	//memset(key, 0, 16); pressed = 0;
-	if (SDL_Init(SDL_INIT_VIDEO) == 0){
+
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0){  		
+		if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) < 0) return 0;
+		if ((beep = Mix_LoadMUS("beep.wav")) == NULL) return 0;
 		if ((window = SDL_CreateWindow("Chip8js", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 320, SDL_WINDOW_SHOWN)) == NULL) return 0;
 		if ((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) == NULL) return 0;
 
@@ -38,8 +44,8 @@ inline int init_display(){
 	return 0;
 }
 
-inline void shutdown_display(){
-	//SDL_FreeSurface(screen);
+inline void shutdown_media(){
+	Mix_FreeMusic(beep);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
@@ -83,8 +89,22 @@ int key_pressed(byte k){
 	}
 }
 
-
-
 byte get_pressed(){
 	return last_pressed;
+}
+
+void start_bell(){
+	if(Mix_PlayingMusic() == 0) {
+		Mix_PlayMusic(beep, -1);
+	}
+}
+
+void end_bell(){
+	//SDL_PauseAudio(1);
+
+	if(Mix_PlayingMusic() > 0) {
+		Mix_HaltMusic();
+	}
+
+	
 }
