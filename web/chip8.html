@@ -8,8 +8,8 @@
   </head>
   <body>
     <div class="outer">
+      <h2>CHIP8 Emulator</h2>
       <div class="emulator">
-        <h2>CHIP8 Emulator</h2>
         <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
         <div id="notification"></div>
 
@@ -33,27 +33,27 @@
                 <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
               </button> 
             </div>
-        </div>
-      </div>
 
-      <div id="help-screen" onclick="close_help()">
-        <div id="help" onclick="event.stopImmediatePropagation()">
-          <h3>Help</h3>
-          <p>A simple <a href="https://en.wikipedia.org/wiki/CHIP-8" target="_blank">CHIP-8</a> Emulator, written in C and compiled to Javascript using <a href="https://github.com/kripken/emscripten" target="_blank">Emscripten</a>. This emulator can only run programs written in original CHIP-8, and can't read SuperChip and MegaChip ones. You can download some free CHIP-8 programs and games in <a href="http://www.chip8.com/?page=109" target="_blank">CHIP-8 Website</a>.</p>
-          <h4>Keyboard Mapping</h4>
-          <div id="mapping">
-          ORIGINAL&nbsp;&nbsp;&nbsp;EMULATOR<br/>
-          &nbsp;&nbsp;123C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1234<br/>
-          &nbsp;&nbsp;456D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QWER<br/>
-          &nbsp;&nbsp;789E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ASDF<br/>
-          &nbsp;&nbsp;A0BF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ZXCV<br/>
+            <div id="help-screen" onclick="close_help()">
+              <div id="help" onclick="event.stopImmediatePropagation()">
+                <span id="close-help" onclick="close_help()">x</span>
+                <h3>Help</h3>
+                <p>A simple <a href="https://en.wikipedia.org/wiki/CHIP-8" target="_blank">CHIP-8</a> Emulator, written in C and compiled to Javascript using <a href="https://github.com/kripken/emscripten" target="_blank">Emscripten</a>. This emulator can only run programs written in original CHIP-8, and can't read SuperChip and MegaChip ones. You can download some free CHIP-8 programs and games in <a href="http://www.chip8.com/?page=109" target="_blank">CHIP-8 Website</a>.</p>
+                <h4>Keyboard Mapping</h4>
+                <div id="mapping">
+                ORIGINAL&nbsp;&nbsp;&nbsp;EMULATOR<br/>
+                &nbsp;&nbsp;123C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1234<br/>
+                &nbsp;&nbsp;456D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QWER<br/>
+                &nbsp;&nbsp;789E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ASDF<br/>
+                &nbsp;&nbsp;A0BF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ZXCV<br/>
+                </div>
+                <h4>About</h4>
+                <p>This emulator is written by Faiz Ilham. Visit also <a href="https://github.com/faizilham/chip8js" target="_blank">the github repository</a>.
+              </div>
+            </div>
           </div>
-          <h4>About</h4>
-          <p>This emulator is written by Faiz Ilham. Visit also <a href="https://github.com/faizilham/chip8js" target="_blank">the github repository</a>.
-        </div>
       </div>
     </div>
-
 
     <script type="text/javascript">
       var start_button = document.getElementById("start_button");
@@ -122,6 +122,7 @@
       function init_machine(){
         flipstate();
         notify("Running " + file_select.value);
+        Module._main();
       }
 
       function stop_machine(){
@@ -150,8 +151,6 @@
           FS.close(fp);
 
           init_machine();
-
-          Module._main();
         });
 
         reader.readAsArrayBuffer(file_url);

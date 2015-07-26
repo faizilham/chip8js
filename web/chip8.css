@@ -7,8 +7,8 @@ body{ background: #eee;}
 }
 
 h2 { margin: 0.5em 0;}
-h3 { margin: 0.25em 0;}
-h4 { margin: 0.25em 0;}
+h3 { margin: 0.1em 0;}
+h4 { margin: 0.1em 0;}
 
 #canvas {
 	width: 640px;
@@ -28,6 +28,7 @@ h4 { margin: 0.25em 0;}
 	text-align: center;
 	width: 640px;
 	margin: 0 auto;
+	position: relative;
 }
 
 .btn-file {
@@ -79,15 +80,27 @@ h4 { margin: 0.25em 0;}
 
 #help{
 
-	width: 400px;
-	background: white;
+	width: 500px;
+	background: #f6f6f6;
 	color: black;
 	padding: 1em;
 	text-align: left;
-	position: fixed;
+	position: relative;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	font-size: 11pt;
+}
+
+#close-help{
+	color: #555;
+	float: right;
+	position: relative;
+	font-size: 11pt;
+	cursor: pointer;
+}
+#close-help:hover{
+	color: #000;
 }
 
 #help-screen{
@@ -102,4 +115,5 @@ h4 { margin: 0.25em 0;}
 
 #mapping {
 	font-family: monospace;
+	padding-bottom: 0.25em;
 }
