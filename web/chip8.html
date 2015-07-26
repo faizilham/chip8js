@@ -18,7 +18,7 @@
                 <span class="btn btn-primary btn-file input-group-addon">
                     <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
                     <input type="file" id="file_select" accept=".ch8" /> 
-                </span> <input type="text" class="form-control" id="file_title" placeholder="Load ROM File" readonly="readonly">
+                </span> <input type="text" class="form-control" id="file_title" placeholder="Load .ch8 ROM File" readonly="readonly">
               </div>
             </div>
             <div class="col-xs-1 no-gutter">
@@ -99,11 +99,15 @@
           start_button.title = "Turn off machine";
           start_button.className = "btn btn-danger btn-sized";
           start_button_text.className = "glyphicon glyphicon-stop";
+          file_select.disabled = true;
+          file_title.disabled = true;
         }else{
           playing = false;
           start_button.title = "Start machine";
           start_button.className = "btn btn-success btn-sized";
           start_button_text.className = "glyphicon glyphicon-play";
+          file_select.disabled = false;
+          file_title.disabled = false;
         }
       }
 
