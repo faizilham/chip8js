@@ -3,28 +3,20 @@
   <head>
   </head>
   <body>
-    <div class="emscripten">
-      <progress value="0" max="100" id="progress" hidden=1></progress>
-    </div>
-
-    
     <div class="emscripten_border">
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
     </div>
-    <input type="file" id="file_select" value="Load ROM File"/> <button id="start_button" onclick="startstop()" >Start</button>
+    <input type="file" id="file_select" value="Load ROM File"/> <button id="start_button" onclick="startstop()" >Start</button> <span id="notification"></span>
     <script type="text/javascript">
       var start_button = document.getElementById("start_button");
       var file_select = document.getElementById("file_select");
+      var notification = document.getElementById("notification");
+
+      var canvas = document.getElementById('canvas');
+      canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
 
       var Module = {
-
-        canvas: (function() {
-          var canvas = document.getElementById('canvas');
-          canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
-
-          return canvas;
-        })(),
-
+        canvas: canvas,
         noInitialRun: true
       };
 
@@ -48,9 +40,19 @@
         }
       }
 
+      function init_machine(){
+        flipstate();
+      }
+
       function stop_machine(){
         flipstate();
+        notification.innerHTML = "";
         Module._stop_loop();
+      }
+
+      function notify_stop(){
+        //alert("Program halted, press stop to turn off the machine");
+        notification.innerHTML = "Program halted, press stop to turn off the machine";
       }
 
       function load_file(){
@@ -68,7 +70,8 @@
           FS.write(fp, result, 0, result.length, 0);
           FS.close(fp);
 
-          flipstate();
+          init_machine();
+
           Module._main();
         });
 

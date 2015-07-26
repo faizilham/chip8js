@@ -6,8 +6,7 @@ void update_machine();
 extern int need_redraw;
 extern int wait_key;
 extern int sound_playing;
-extern int st;
-extern void (*on_opcode_fail)();
+extern int machine_halt;
 
 
 #endif

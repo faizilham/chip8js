@@ -20,6 +20,8 @@ static inline void instr_00EE(){
 static inline void instr_1nnn(){ 
 	// jump to nnn
 	pc = get_nnn();
+
+	if (prev_pc == pc) on_opcode_fail(); // trap jump means halt machine
 }
 
 static inline void instr_2nnn(){ 

@@ -13,20 +13,25 @@
 byte mem[MEMORY_SIZE];
 byte reg[16];
 int reg_i;
-int pc, sp, dt, st;
+int prev_pc, pc, sp, dt, st;
 int need_redraw;
 int stack[16];
 byte code1, code2;
 int io_opcode;
 int cycles;
-void (*on_opcode_fail)();
-
+void (*opcode_fail)();
 void default_opcode_fail(){};
 
 // machine states
-int machine_stop;
 int wait_key;
 int sound_playing;
+int machine_halt;
+
+
+void on_opcode_fail(){
+	cycles = 0; machine_halt = 1;
+	opcode_fail();
+}
 
 /*** Instruction Codes Byte Reading Function ***/
 static inline byte get1(){
@@ -62,14 +67,14 @@ void init_machine(char* rom_file, void (*fail_function)()){
 	memset(mem, 0, MEMORY_SIZE);
 
 	// init machine state
-	pc = PROGRAM_START; sp = -1; dt = 0; st = 0; need_redraw = 1; machine_stop = 0; sound_playing = 0;
-	wait_key = 0; cycles = 0;
+	pc = PROGRAM_START; sp = -1; dt = 0; st = 0; need_redraw = 1; sound_playing = 0;
+	wait_key = 0; cycles = 0; machine_halt = 0;
 	srand(time(NULL));
 
 	if (fail_function == NULL){
-		on_opcode_fail = default_opcode_fail;
+		opcode_fail = default_opcode_fail;
 	}else{
-		on_opcode_fail = fail_function;
+		opcode_fail = fail_function;
 	}
 
 	// copy digits
@@ -95,6 +100,7 @@ void init_machine(char* rom_file, void (*fail_function)()){
 static inline void execute_one(){
 	// fetch opcode
 	code1 = mem[pc]; code2 = mem[pc+1];
+	prev_pc = pc;
 	pc+=2; io_opcode = 0;
 	
 	byte front = get1(); int temp;
@@ -179,9 +185,6 @@ static inline void execute_one(){
 	}
 
 	cycles -= 1;
-	if (pc >= MEMORY_SIZE){
-		on_opcode_fail();
-	}
 }
 
 void update_machine(int cycle){

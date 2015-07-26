@@ -10,11 +10,9 @@ void stop_loop(){
 }
 
 void trigger_stop(){
-	printf("stopped\n");
-	EM_ASM( flipstate() );
-	stop_loop();
-	
-	exit(0);
+	printf("machine halted\n");
+	EM_ASM(notify_stop());
+	emscripten_pause_main_loop();
 }
 
 void loop() {
