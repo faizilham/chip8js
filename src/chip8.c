@@ -112,7 +112,7 @@ static inline void execute_one(){
 			}else if (temp == 0xEE){
 				instr_00EE();
 			}else{
-				on_opcode_fail();
+				
 			}
 			
 			// 0nnn not implemented
