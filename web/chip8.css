@@ -1,0 +1,79 @@
+.outer {
+	font-family: sans-serif;
+
+	text-align: center;
+}
+
+h2 { margin: 0.25em 0;}
+h3 { margin: 0.25em 0;}
+h4 { margin: 0.25em 0;}
+
+#canvas {
+	width: 640px;
+	height: 320px;
+	background: #1E1E1E;
+}
+
+#notification{
+	display: block; width: 100%; background: #0A0A0A;
+	color: #00ff00; text-align: left; padding: 0.3em;
+	font-family: monospace;
+}
+
+.emulator{
+	text-align: center;
+	width: 640px;
+	margin: 0 auto;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+
+
+.btn:focus, .btn:active {
+  outline: none !important;
+}
+
+.buttons {
+	margin: 1em auto;	
+}
+
+.no-gutter {
+    padding:0;
+    max-height: 50px;
+}
+
+#file_title{
+	background: #fff;
+}
+
+.btn-sized{
+	height: 35px;
+}
+
+.help{
+	margin-top:3em;
+}
+
+
+#mapping {
+	font-family: monospace;
+}

@@ -1,15 +1,57 @@
 <!DOCTYPE html />
 <html>
-  <head>
+  <head> 
+    <title>CHIP8 Emulator</title>
+    <link href='bootstrap/css/bootstrap.min.css' rel='stylesheet' type='text/css'></link>
+    <link href='chip8.css' rel='stylesheet' type='text/css'></link>
   </head>
   <body>
-    <div class="emscripten_border">
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+    <div class="outer">
+      <div class="emulator">
+        <h2>CHIP8 Emulator</h2>
+        <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+        <div id="notification"></div>
+
+        <div class="buttons row">
+            <div class="col-xs-4 no-gutter">
+              <div class="input-group" id="uploader">
+                <span class="btn btn-primary btn-file input-group-addon">
+                    <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
+                    <input type="file" id="file_select" accept=".ch8" /> 
+                </span> <input type="text" class="form-control" id="file_title" placeholder="Load ROM File" readonly="readonly">
+              </div>
+            </div>
+            <div class="col-xs-1 no-gutter">
+              <button class="btn btn-success btn-sized" id="start_button" title="Start machine" onclick="startstop()">
+                <span class="glyphicon glyphicon-play" id="start_button_text" aria-hidden="true"></span>
+              </button> 
+            </div>
+             <div class="col-xs-1 no-gutter">
+              <button class="btn btn-default btn-sized" id="start_button" title="Help">
+                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+              </button> 
+            </div>
+        </div>
+      </div>
+      <div class="help">
+        <h3>Help</h3>
+        <h4>Keyboard Mapping</h4>
+        <div id="mapping">
+        ORIGINAL&nbsp;&nbsp;&nbsp;EMULATOR<br/><br/>
+        123C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1234<br/>
+        456D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QWER<br/>
+        789E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ASDF<br/>
+        A0BF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ZXCV<br/>
+        </div>
+      </div>
     </div>
-    <input type="file" id="file_select" value="Load ROM File"/> <button id="start_button" onclick="startstop()" >Start</button> <span id="notification"></span>
+
+
     <script type="text/javascript">
       var start_button = document.getElementById("start_button");
+      var start_button_text = document.getElementById("start_button_text");
       var file_select = document.getElementById("file_select");
+      var file_title = document.getElementById("file_title");
       var notification = document.getElementById("notification");
 
       var canvas = document.getElementById('canvas');
@@ -21,6 +63,10 @@
       };
 
       var playing = false;
+      file_title.onclick = function() { file_select.click(); }
+      file_select.onchange = function(e){
+        file_title.value = file_select.value;
+      }
 
       function startstop(){
         if (!playing){
@@ -33,32 +79,43 @@
       function flipstate(){
         if (!playing){
           playing = true;
-          start_button.innerHTML = "Stop";
+          start_button.title = "Turn off machine";
+          start_button.className = "btn btn-danger btn-sized";
+          start_button_text.className = "glyphicon glyphicon-stop";
         }else{
           playing = false;
-          start_button.innerHTML = "Start";
+          start_button.title = "Start machine";
+          start_button.className = "btn btn-success btn-sized";
+          start_button_text.className = "glyphicon glyphicon-play";
         }
       }
 
+      function notify(message){
+        notification.innerHTML = "Status: " + message;
+      }
+
+      notify("Machine turned off");
+
+
       function init_machine(){
         flipstate();
+        notify("Running " + file_select.value);
       }
 
       function stop_machine(){
         flipstate();
-        notification.innerHTML = "";
+        notify("Machine turned off");
         Module._stop_loop();
       }
 
       function notify_stop(){
-        //alert("Program halted, press stop to turn off the machine");
-        notification.innerHTML = "Program halted, press stop to turn off the machine";
+        notify("Program halted, press stop to turn off the machine");
       }
 
       function load_file(){
         var file_url = file_select.files[0];
         if (!file_url){
-          alert("Please load a ROM file");
+          alert("Please load a .ch8 ROM file");
           return;
         } 
 
