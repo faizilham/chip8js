@@ -27,21 +27,27 @@
               </button> 
             </div>
              <div class="col-xs-1 no-gutter">
-              <button class="btn btn-default btn-sized" id="start_button" title="Help">
+              <button class="btn btn-default btn-sized" title="Help" onclick="show_help()">
                 <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
               </button> 
             </div>
         </div>
       </div>
-      <div class="help">
-        <h3>Help</h3>
-        <h4>Keyboard Mapping</h4>
-        <div id="mapping">
-        ORIGINAL&nbsp;&nbsp;&nbsp;EMULATOR<br/><br/>
-        123C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1234<br/>
-        456D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QWER<br/>
-        789E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ASDF<br/>
-        A0BF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ZXCV<br/>
+
+      <div id="help-screen" onclick="close_help()">
+        <div id="help" onclick="event.stopImmediatePropagation()">
+          <h3>Help</h3>
+          <p>A simple <a href="https://en.wikipedia.org/wiki/CHIP-8" target="_blank">CHIP-8</a> Emulator, written in C and compiled to Javascript using <a href="https://github.com/kripken/emscripten" target="_blank">Emscripten</a>. This emulator can only run programs written in original CHIP-8, and can't read SuperChip and MegaChip ones. You can download some free CHIP-8 programs and games in <a href="http://www.chip8.com/?page=109" target="_blank">CHIP-8 Website</a>.</p>
+          <h4>Keyboard Mapping</h4>
+          <div id="mapping">
+          ORIGINAL&nbsp;&nbsp;&nbsp;EMULATOR<br/>
+          &nbsp;&nbsp;123C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1234<br/>
+          &nbsp;&nbsp;456D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QWER<br/>
+          &nbsp;&nbsp;789E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ASDF<br/>
+          &nbsp;&nbsp;A0BF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ZXCV<br/>
+          </div>
+          <h4>About</h4>
+          <p>This emulator is written by Faiz Ilham. Visit also <a href="https://github.com/faizilham/chip8js" target="_blank">the github repository</a>.
         </div>
       </div>
     </div>
@@ -53,6 +59,8 @@
       var file_select = document.getElementById("file_select");
       var file_title = document.getElementById("file_title");
       var notification = document.getElementById("notification");
+      var help_screen = document.getElementById("help-screen");
+
 
       var canvas = document.getElementById('canvas');
       canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
@@ -74,6 +82,14 @@
         }else{
           stop_machine();
         }
+      }
+
+      function close_help(){
+        help_screen.style.display = "none";
+      }
+
+      function show_help(){
+        help_screen.style.display = "block";
       }
 
       function flipstate(){
