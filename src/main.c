@@ -11,6 +11,7 @@ void stop_loop(){
 
 void trigger_stop(){
 	printf("machine halted\n");
+	end_bell();
 	EM_ASM(notify_stop());
 	emscripten_pause_main_loop();
 }
